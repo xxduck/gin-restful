@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func main() {
+func _main() {
 	databases.DbConnect()
 
 	app := gin.Default()
@@ -22,7 +22,7 @@ func main() {
 	user :=  app.Group("user")
 
 	{
-		user.GET("/", )
+		user.GET("/", models.Index)
 	}
 
 

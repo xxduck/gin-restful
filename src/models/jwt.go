@@ -13,8 +13,8 @@ import (
 const secret = "name"
 
 type Jwt struct {
-	*Header
-	*Playoad
+	Header
+	Playoad
 }
 
 type Header struct {
@@ -28,19 +28,19 @@ type Playoad struct {
 }
 
 
-var JwtToken = Jwt{
-	// Typ: "JWT",
-	// Alg: "HS256",
-	// UserId: 0,
-	// Exp: time.Now().AddDate(0, 0, 30),
-	Header: &Header{Typ: "JWT", Alg: "HS256"},
-	Playoad: &Playoad{UserId: 0, Exp: time.Now().AddDate(0,0,30)},
-}
+// var JwtToken = Jwt{
+// 	// Typ: "JWT",
+// 	// Alg: "HS256",
+// 	// UserId: 0,
+// 	// Exp: time.Now().AddDate(0, 0, 30),
+// 	Header: &Header{Typ: "JWT", Alg: "HS256"},
+// 	Playoad: &Playoad{UserId: 0, Exp: time.Now().AddDate(0,0,30)},
+// }
 
 func (self *Jwt) Token() string  {
 
-	header, _ := json.Marshal(JwtToken.Header)
-	playoad, _ := json.Marshal(JwtToken.Playoad)
+	header, _ := json.Marshal(self.Header)
+	playoad, _ := json.Marshal(self.Playoad)
 
 
 	h := base64.URLEncoding.EncodeToString(header)
@@ -49,7 +49,6 @@ func (self *Jwt) Token() string  {
 	end := fmt.Sprintf("%s.%s%s", h, p, secret)
 	
 	result := sha256.Sum256([]byte(end))
-
 	return fmt.Sprintf("%s.%s.%s", h, p, hex.EncodeToString(result[:]))
 
 }

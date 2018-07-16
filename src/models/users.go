@@ -35,18 +35,25 @@ func (self *User) check() bool {
 
 // view
 func Index(c *gin.Context) {
-
-
-	user := User{
-		Name: c.DefaultQuery("name", "匿名"),
-		Passwd: c.DefaultQuery("passwd", "匿名"),
-		Email: c.DefaultQuery("email", "15732633601@163.com"),
-		Tel: c.DefaultQuery("tel", "15732633601"),
+	if value, ok := c.Get("JWT"); ok {
+		if v, ok := value.(Jwt); ok{
+			c.JSON(200, gin.H{
+				"yourid": v.UserId,
+			})
+			return
+		}
 	}
-	
-	if u, ok := user.MakeToken(); ok {
-		c.JSON(200, u)
-	}else{
-		c.JSON(200, u)
-	}
+	c.JSON(200, gin.H{
+		"status": 200,
+	})
 }
+
+
+func Login(c *gin.Context)  {
+	
+	
+	c.JSON(200, gin.H{
+		"status": 200,
+	})
+}
+	

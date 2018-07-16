@@ -5,9 +5,10 @@ import (
 	"gin-restful/src/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"gin-restful/src/middlewares"
 )
 
-func _main() {
+func main() {
 	databases.DbConnect()
 
 	app := gin.Default()
@@ -20,11 +21,15 @@ func _main() {
 
 	// 用户
 	user :=  app.Group("user")
+	user.Use(middlewares.JwtMiddle())
 
 	{
 		user.GET("/", models.Index)
+		// user.GET("/gettoken/", models.Login)
 	}
 
+
+	app.GET("/gettoken/", models.Login)
 
 	// 定义主页请求方法
 	app.GET("/", func(c *gin.Context) {

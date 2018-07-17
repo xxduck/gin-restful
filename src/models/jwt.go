@@ -27,6 +27,13 @@ type Playoad struct {
 	Exp    time.Time `json:"exp"`
 }
 
+
+func (self *Jwt) Init() *Jwt {
+	self.Typ = "JWT"
+	self.Alg = "HS256"
+	self.Exp = time.Now().AddDate(0,0,30)
+	return self
+}
 // var JwtToken = Jwt{
 // 	// Typ: "JWT",
 // 	// Alg: "HS256",

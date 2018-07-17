@@ -37,9 +37,7 @@ func (self *User) check() bool {
 func Index(c *gin.Context) {
 	if value, ok := c.Get("JWT"); ok {
 		if v, ok := value.(Jwt); ok{
-			c.JSON(200, gin.H{
-				"yourid": v.UserId,
-			})
+			c.JSON(200, v)
 			return
 		}
 	}
@@ -50,10 +48,27 @@ func Index(c *gin.Context) {
 
 
 func Login(c *gin.Context)  {
+	name := c.Query("name")
+	passwd := c.Query("passwd")
+
+	if name == "xiaofang" && passwd == "123456" {
+		jwt := new(Jwt)
+		jwt = jwt.Init()
+		jwt.UserId = 10
+
+		token := jwt.Token()
+		c.Header("Authorization", token)
+		c.JSON(200, gin.H{
+			"token": token,
+		})
+		return
+	}else{
+		c.JSON(200, gin.H{
+			"status": name,
+			"pwd": passwd,
+		})
+	}
 	
 	
-	c.JSON(200, gin.H{
-		"status": 200,
-	})
 }
 	

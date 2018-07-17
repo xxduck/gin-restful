@@ -18,6 +18,10 @@ func JwtMiddle() gin.HandlerFunc  {
 			if m.Checktoken(auth) {
 				c.Set("JWT", m)
 				c.Next()
+			}else{
+				c.AbortWithStatusJSON(200, gin.H{
+					"reson": "权限不允许",
+				})
 			}
 
 		}else{

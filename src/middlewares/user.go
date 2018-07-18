@@ -10,10 +10,11 @@ func UserMiddle() gin.HandlerFunc  {
 		user := &models.User{
 			Id: 0,
 			Name: "root",
-			Group: models.Group{
-				Name: "root",
-			},
-		}
+			Role: [3]models.Group{
+				models.Group{Name: "custom"},
+				// models.Group{Name: "root"},
+			}}
+		
 
 		c.Set("user", user)
 

@@ -12,7 +12,7 @@ type User struct {
 	Email string
 	Tel string
 	Token string
-	Group
+	Role [3]Group
 }
 
 
@@ -34,50 +34,87 @@ func (self *User) check() bool {
 	}
 }
 
+func (self *User) PermissionRead(url string) bool {
+	
+	xrange := len(self.Role)
+	for i := 0; i < xrange; i++ {
+		// 结构体不为空
+		if self.Role[i].Name != "" && self.Role[i].Read(url) {
+			return true
+		}
+	}
+	return false
+}
+
+func (self *User) PermissionPut(url string) bool {
+	
+	xrange := len(self.Role)
+	for i := 0; i < xrange; i++ {
+		// 结构体不为空
+		if self.Role[i].Name != "" && self.Role[i].Put(url) {
+			return true
+		}
+	}
+	return false
+}
+
+func (self *User) PermissionDelete(url string) bool {
+	
+	xrange := len(self.Role)
+	for i := 0; i < xrange; i++ {
+		// 结构体不为空
+		if self.Role[i].Name != "" && self.Role[i].Delete(url) {
+			return true
+		}
+	}
+	return false
+}
+
+func (self *User) PermissionUpdate(url string) bool {
+	
+	xrange := len(self.Role)
+	for i := 0; i < xrange; i++ {
+		// 结构体不为空
+		if self.Role[i].Name != "" && self.Role[i].Update(url) {
+			return true
+		}
+	}
+	return false
+}
+
 // view
 func Index(c *gin.Context) {
-	// if value, ok := c.Get("JWT"); ok {
-	// 	if v, ok := value.(Jwt); ok{
-	// 		c.JSON(200, v)
-	// 		return
-	// 	}
-	// }
-	// c.JSON(200, gin.H{
-	// 	"status": 200,
-	// })
-
-	if value, ok := c.Get("user"); ok {
-		if v, ok := value.(*User); ok {
-			
-			con := [4]string{}
-			func (per Permission)  {
-
+	if v, ok := c.Get("user"); ok {
+		if value, ok := v.(*User); ok {
+			url := c.Request.URL.String()
+			switch  {
+			case value.PermissionRead(url):
+				c.String(200, "可读")
 				
-				p := "增"
-				d := "删"
-				u := "改"
-				r := "查"
+				fallthrough
+			
+			case value.PermissionPut(url):
+				c.String(200, "可增")
+				fallthrough
+			
+			case value.PermissionUpdate(url):
+				c.String(200, "可改")
+				fallthrough
+			
+			case value.PermissionDelete(url):
+				c.String(200, "可珊")
+			default:
+				c.String(200, "啥都干不了")
+			}
 
-				if per.Read(c.Request.URL.String()) {
-					con[0] = p
-				}
-				if per.Put(c.Request.URL.String()) {
-					con[1] = d
-				}
-				if per.Delete(c.Request.URL.String()) {
-					con[2] = u
-				}
-				if per.Update(c.Request.URL.String()) {
-					con[3] = r
-				}
-			}(v)
-			c.JSON(200, con)
-			return
-			}}
+		}else{
+			c.String(200, "查询用户状态失败")
+		}
+	}else{
+		c.String(200, "查询用户状态失败")
+	}
 
-	c.JSON(200, gin.H{
-		"status": "不可以读取",
-	})
+	
 }
 
 

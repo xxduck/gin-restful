@@ -12,6 +12,7 @@ type User struct {
 	Email string
 	Tel string
 	Token string
+	Group
 }
 
 
@@ -35,14 +36,47 @@ func (self *User) check() bool {
 
 // view
 func Index(c *gin.Context) {
-	if value, ok := c.Get("JWT"); ok {
-		if v, ok := value.(Jwt); ok{
-			c.JSON(200, v)
+	// if value, ok := c.Get("JWT"); ok {
+	// 	if v, ok := value.(Jwt); ok{
+	// 		c.JSON(200, v)
+	// 		return
+	// 	}
+	// }
+	// c.JSON(200, gin.H{
+	// 	"status": 200,
+	// })
+
+	if value, ok := c.Get("user"); ok {
+		if v, ok := value.(*User); ok {
+			
+			con := [4]string{}
+			func (per Permission)  {
+
+				
+				p := "增"
+				d := "删"
+				u := "改"
+				r := "查"
+
+				if per.Read(c.Request.URL.String()) {
+					con[0] = p
+				}
+				if per.Put(c.Request.URL.String()) {
+					con[1] = d
+				}
+				if per.Delete(c.Request.URL.String()) {
+					con[2] = u
+				}
+				if per.Update(c.Request.URL.String()) {
+					con[3] = r
+				}
+			}(v)
+			c.JSON(200, con)
 			return
-		}
-	}
+			}}
+
 	c.JSON(200, gin.H{
-		"status": 200,
+		"status": "不可以读取",
 	})
 }
 

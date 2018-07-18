@@ -25,6 +25,7 @@ type Header struct {
 type Playoad struct {
 	UserId int       `json:"userid"`
 	Exp    time.Time `json:"exp"`
+	User
 }
 
 
@@ -70,6 +71,7 @@ func (self *Jwt) Checktoken(s string) bool {
 
 		json.Unmarshal(h, &self.Header)
 		json.Unmarshal(p, &self.Playoad)
+
 		if self.Exp.After(time.Now()) {
 			end := fmt.Sprintf("%s.%s%s", header, playoad, secret)
 

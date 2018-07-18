@@ -32,7 +32,7 @@ type Permission interface {
 
 
 type Group struct {
-	Name string
+	Name string `json:"role"`
 }
 
 

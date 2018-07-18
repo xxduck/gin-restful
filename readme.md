@@ -29,6 +29,7 @@ govender fetch github.com/xiaofang-git/gin-restful
 
 
 ### TODO
-    [ - ]  用户角色多对多
+    [ - ]  Session  (其实在restful服务中一般使用token保存用户状态跟权限)
+    [ - ]  Cache
 
 

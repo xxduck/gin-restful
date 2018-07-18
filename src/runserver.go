@@ -20,7 +20,8 @@ func main() {
 
 	// 用户
 	user :=  app.Group("user")
-	user.Use(middlewares.UserMiddle())
+	user.Use(middlewares.JwtMiddle())
+	// user.Use(middlewares.UserMiddle())
 
 	{
 		user.GET("/", models.Index)

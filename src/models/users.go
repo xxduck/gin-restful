@@ -6,23 +6,12 @@ import (
 
 
 type User struct {
-	Id int
-	Name  string
-	Passwd string
-	Email string
-	Tel string
-	Token string
-	Role [3]Group
-}
-
-
-func (self *User) MakeToken() (*User, bool) {
-	if self.check() {
-		self.Token = "hello"
-		return self, true
-	}else{
-		return self, false
-	}
+	Id int `json:"id"`
+	Name  string `json:"name"`
+	Passwd string	`json:"passwd,omitempty"`
+	Email string	`json:"email,omitempty"`
+	Tel string		`json:"tel,omitempty"`
+	Role [3]Group	
 }
 
 
@@ -84,6 +73,7 @@ func (self *User) PermissionUpdate(url string) bool {
 
 // view
 func Index(c *gin.Context) {
+
 	if v, ok := c.Get("user"); ok {
 		if value, ok := v.(*User); ok {
 			url := c.Request.URL.String()
@@ -123,9 +113,25 @@ func Login(c *gin.Context)  {
 	passwd := c.Query("passwd")
 
 	if name == "xiaofang" && passwd == "123456" {
+		role := [3]Group{
+			Group{
+				Name: "custom",
+			},
+			Group{
+				Name: "root",
+			},
+		}
+
+		user := &User{
+			Id: 10,
+			Name: "xiaofang",
+			Role: role,
+		}
+
 		jwt := new(Jwt)
 		jwt = jwt.Init()
 		jwt.UserId = 10
+		jwt.User = *user
 
 		token := jwt.Token()
 		c.Header("Authorization", token)

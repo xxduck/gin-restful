@@ -28,7 +28,7 @@ func main() {
 	}
 
 
-	app.GET("/gettoken/", models.Login)
+	app.GET("/login/", models.Login)
 
 	// 定义主页请求方法
 	app.GET("/", func(c *gin.Context) {

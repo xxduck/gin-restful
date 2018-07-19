@@ -13,6 +13,7 @@ func main() {
 	app := gin.Default()
 	// 所有文章
 	article := app.Group("article")
+	article.Use(middlewares.CacheMiddle())
 	{
 		article.GET("/", models.GetAll)
 		article.GET("/:id/", models.One)
@@ -38,4 +39,3 @@ func main() {
 
 	app.Run()
 }
-

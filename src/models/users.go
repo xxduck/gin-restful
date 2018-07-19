@@ -14,6 +14,23 @@ type User struct {
 	Role [3]Group	
 }
 
+// 初始化默认user（即匿名用户）
+func (self *User) Init() *User {
+
+	self.Name = "Anonymous"
+	self.Id = 0
+	self.Passwd = ""
+	self.Email = ""
+	self.Tel = ""
+	self.Role = [3]Group{
+		Group{
+			Name: "custom",
+		},
+	}
+	
+	return self
+}
+
 
 func (self *User) check() bool {
 	if self.Name == "xiaofang" && self.Passwd == "123456" {

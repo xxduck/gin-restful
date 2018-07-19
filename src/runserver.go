@@ -26,7 +26,6 @@ func main() {
 
 	{
 		user.GET("/", models.Index)
-		// user.GET("/gettoken/", models.Login)
 	}
 
 

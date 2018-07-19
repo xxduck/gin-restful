@@ -32,7 +32,7 @@ func CacheMiddle() gin.HandlerFunc {
 		}else{
 				// 在之前替换c.Writer
 			tmp := c.Writer
-
+			
 			rw := &Mycontext{
 				ResponseWriter: c.Writer,
 			}

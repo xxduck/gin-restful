@@ -11,7 +11,7 @@ type User struct {
 	Passwd string	`json:"passwd,omitempty"`
 	Email string	`json:"email,omitempty"`
 	Tel string		`json:"tel,omitempty"`
-	Role [3]Group	
+	Role [3]Group
 }
 
 // 初始化默认user（即匿名用户）
@@ -152,6 +152,10 @@ func Login(c *gin.Context)  {
 
 		token := jwt.Token()
 		c.Header("Authorization", token)
+
+		session := new(Session)
+		session.User = *user
+		session.Save(c)
 		c.JSON(200, gin.H{
 			"token": token,
 		})

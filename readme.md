@@ -25,11 +25,13 @@ govender fetch github.com/xiaofang-git/gin-restful
 
     - 权限模块
 
-        - 基于用户角色（分组）鉴权
+        - 使用token基于用户角色（分组）鉴权
 
+    - Cache
+
+        - 基于视图的缓存
 
 ### TODO
     [ - ]  Session  (其实在restful服务中一般使用token保存用户状态跟权限)
-    [ - ]  Cache
 
 

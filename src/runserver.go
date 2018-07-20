@@ -11,6 +11,7 @@ func main() {
 	databases.DbConnect()
 
 	app := gin.Default()
+	
 	// 所有文章
 	article := app.Group("article")
 	article.Use(middlewares.CacheMiddle())
@@ -21,8 +22,8 @@ func main() {
 
 	// 用户
 	user :=  app.Group("user")
-	user.Use(middlewares.JwtMiddle())
-	// user.Use(middlewares.UserMiddle())
+	// user.Use(middlewares.JwtMiddle())
+	user.Use(middlewares.Session())
 
 	{
 		user.GET("/", models.Index)
@@ -36,5 +37,5 @@ func main() {
 		c.JSON(200, app.Routes())
 	})
 
-	app.Run()
+	app.Run("0.0.0.0:8080")
 }

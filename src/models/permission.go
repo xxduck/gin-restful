@@ -6,19 +6,23 @@ import (
 	
 )
 // 模拟一个数据库表
-
+//  0b1111 增删改查
 // group path permission
 var GroupTable = map[string]map[string]int{
 	// 普通用户
 	"custom":	{
-		"/": 15,
-		"/user/*" : 0,
+		"/user/*" : 1,
 
 	},
 
 	// 管理员
 	"root": {
 		"/user/*": 15,
+	},
+
+	// 匿名用户
+	"anonymous": {
+		"/user/*" : 0,
 	},
 }
 

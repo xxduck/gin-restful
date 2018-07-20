@@ -31,7 +31,10 @@ govender fetch github.com/xiaofang-git/gin-restful
 
         - 基于视图的缓存
 
-### TODO
-    [ - ]  Session  (其实在restful服务中一般使用token保存用户状态跟权限)
+    - Session  (其实在restful服务中一般使用token保存用户状态跟权限)
 
+### TODO
+    
+    - 用户注册
+    - 管理员查看用户列表
 

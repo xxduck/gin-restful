@@ -1,30 +1,32 @@
 package models
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
 
 type User struct {
-	Id int `json:"id"`
-	Name  string `json:"name"`
-	Passwd string	`json:"passwd,omitempty"`
-	Email string	`json:"email,omitempty"`
-	Tel string		`json:"tel,omitempty"`
+	Id int `json:"id" form:"id"`
+	Name  string `json:"name" form:"name" binding:"required"`
+	Passwd string	`json:"passwd,omitempty" form:"passwd" binding:"required"`
+	Email string	`json:"email,omitempty" form:"email" binding:"required"`
+	Tel string		`json:"tel,omitempty" form:"tel" binding:"required"`
 	Role [3]Group
 }
 
 // 初始化默认user（即匿名用户）
 func (self *User) Init() *User {
 
-	self.Name = "Anonymous"
+	self.Name = "anonymous"
 	self.Id = 0
 	self.Passwd = ""
 	self.Email = ""
 	self.Tel = ""
 	self.Role = [3]Group{
 		Group{
-			Name: "custom",
+			Name: "anonymous",
 		},
 	}
 	
@@ -89,84 +91,72 @@ func (self *User) PermissionUpdate(url string) bool {
 }
 
 // view
-func Index(c *gin.Context) {
-
-	if v, ok := c.Get("user"); ok {
-		if value, ok := v.(*User); ok {
-			url := c.Request.URL.String()
-			switch  {
-			case value.PermissionRead(url):
-				c.String(200, "可读")
-				
-				fallthrough
-			
-			case value.PermissionPut(url):
-				c.String(200, "可增")
-				fallthrough
-			
-			case value.PermissionUpdate(url):
-				c.String(200, "可改")
-				fallthrough
-			
-			case value.PermissionDelete(url):
-				c.String(200, "可珊")
-			default:
-				c.String(200, "啥都干不了")
-			}
-
-		}else{
-			c.String(200, "查询用户状态失败")
-		}
+func UserInfo(c *gin.Context)  {
+	user, _ := c.Get("user")
+	if u, ok := user.(*User); ok {
+		c.JSON(200, u)
 	}else{
-		c.String(200, "查询用户状态失败")
+		c.String(200, "你好")
 	}
-
-	
 }
 
 
 func Login(c *gin.Context)  {
 	name := c.Query("name")
 	passwd := c.Query("passwd")
-
-	if name == "xiaofang" && passwd == "123456" {
-		role := [3]Group{
-			Group{
-				Name: "custom",
-			},
-			Group{
-				Name: "root",
-			},
+	infos := read()
+	index := 0
+	for K, info := range infos {
+		for _, i := range strings.Split(info, " ") {
+			if i == name {
+				index = K
+				goto LITE
+			}
 		}
-
-		user := &User{
-			Id: 10,
-			Name: "xiaofang",
-			Role: role,
-		}
-
-		jwt := new(Jwt)
-		jwt = jwt.Init()
-		jwt.UserId = 10
-		jwt.User = *user
-
-		token := jwt.Token()
-		c.Header("Authorization", token)
-
-		session := new(Session)
-		session.User = *user
-		session.Save(c)
-		c.JSON(200, gin.H{
-			"token": token,
-		})
-		return
-	}else{
-		c.JSON(200, gin.H{
-			"status": name,
-			"pwd": passwd,
-		})
 	}
+
+	LITE:
+		name_pd := infos[index]
+		np := strings.Split(name_pd, " ")
+		if name == np[0]  && passwd == np[1] {
+			c.JSON(200, gin.H{
+				"status": "登录成功",
+			})
+		}else{
+			c.JSON(200, gin.H{
+				"status": "用户名或密码错误",
+			})
+		}
 	
 	
+}
+
+
+func Logon(c *gin.Context)  {
+	// 注册
+	if user, ok :=  c.Get("user"); ok {
+		// 已经;
+		if value, ok := user.(*User); ok && value.Name == "anonymous" {
+			u := &User{}
+			err := c.Bind(u)
+			// g := new(Group)
+			// g.Name = "custom"
+			// u.Role = [3]Group{*g}
+			if err != nil {
+				c.JSON(200, gin.H{
+					"error": err,
+				})
+			}else{
+				write(u)
+				c.JSON(200, u)
+			}
+			
+
+		}else{
+			// 已经登录了，无需再注册
+			c.Redirect(302, "http://127.0.0.1:8080")
+
+		}
+	}
 }
 	

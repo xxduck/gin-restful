@@ -39,5 +39,5 @@ func main() {
 		c.JSON(200, app.Routes())
 	})
 
-	app.Run("127.0.0.1:80")
+	app.Run("127.0.0.1:8080")
 }
